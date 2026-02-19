@@ -1,0 +1,59 @@
+  # HardcoreRespawn 配置文件
+  version: 1.0
+
+  settings:
+    # 死亡等待时间（小时）
+    wait_time_hours: 24
+
+    # 一滴血机制
+    one_heart:
+      enabled: true
+      speed_reduction: 0.2  # 20% 速度降低
+      particle_effect: true
+      sound_effect: true
+
+    # BossBar 设置
+    bossbar:
+      enabled: true
+      color: RED
+      style: SOLID
+
+    # 出生点安全半径（格）
+    spawn_radius: 5
+
+    # 离线时是否继续倒计时
+    countdown_offline: true
+
+  # 未来扩展：击杀生物获得次数
+  rewards:
+    enabled: false
+    entities:
+      WANDERING_TRADER:
+        chance: 0.1  # 10% 概率
+        count: 1
+      PHANTOM:
+        chance: 0.2
+        count: 1
+
+  # 消息配置
+  messages:
+    respawn_used: "&a你使用了一次复活机会！剩余次数: {count}"
+    death_penalty_started: "&c你已经用完了所有复活机会，将在出生点等待24小时才能复活！"
+    movement_restricted: "&c你正在等待期，不能离开出生点区域！"
+    not_in_waiting_period: "&c你不在等待期！"
+    no_respawn_count: "&c你没有足够的复活次数来跳过等待！"
+    skip_success: "&a成功跳过等待！剩余次数: {count}"
+    waiting_period_ended: "&a你的等待期已结束，现在可以自由行动！"
+    info_respawn_count: "&a复活次数: {count}"
+    info_waiting_time_left: "&c剩余等待时间: {time}"
+    info_not_waiting: "&a你不在等待期"
+    bossbar_title: "&c等待复活 &f{time}"
+    reward_received: "&a你击杀{entity}获得了{count}次复活机会！"
+    data_not_loaded: "&c玩家数据尚未加载完成，请稍后再试！"
+    admin_respawn_count_added: "&a管理员给你增加了{amount}次复活机会！当前总数: {total}"
+    admin_respawn_count_added_console: "&a已给玩家{player}增加{amount}次复活机会，当前总数: {total}"
+    admin_respawn_count_set: "&a管理员将你的复活次数设置为{amount}！"
+    admin_respawn_count_set_console: "&a已将玩家{player}的复活次数设置为{amount}"
+    admin_reset_player: "&a管理员重置了你的等待状态！"
+    admin_reset_player_console: "&a已重置玩家{player}的等待状态"
+    player_not_found: "&c找不到该玩家！"

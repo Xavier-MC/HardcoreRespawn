@@ -1,0 +1,30 @@
+name: HardcoreRespawn
+version: 1.0.0
+main: xaviermc.top.hardcoreRespawn.HardcoreRespawn
+api-version: '1.21'
+authors: CerealAxis
+description: 硬核复活插件 - 为服务器添加硬核死亡惩罚机制
+
+commands:
+  respawn:
+    description: 复活相关指令
+    usage: /respawn <skip|info|admin|reload>
+    aliases: [hr, hardcorerespawn]
+    permission: hardcorerespawn.use
+
+permissions:
+  hardcorerespawn.use:
+    description: 基础使用权限
+    default: true
+  hardcorerespawn.skip:
+    description: 使用跳过等待指令
+    default: true
+  hardcorerespawn.info:
+    description: 查看复活信息
+    default: true
+  hardcorerespawn.admin:
+    description: 管理员权限
+    default: op
+  hardcorerespawn.reload:
+    description: 重载配置文件
+    default: op

@@ -24,3 +24,6 @@ messages:
   admin_reset_player_console: "§a已重置玩家{player}的等待状态"
   player_not_found: "§c找不到该玩家！"
   one_heart_applied: "§c一滴血模式已启用！你的最大生命值为1颗心"
+  command_blocked: "&c等待期间无法使用此指令！"
+  still_in_waiting_period: "&c你仍在等待期，剩余时间：{time}"
+  bypass_enabled: "&e你拥有指令限制绕过权限"

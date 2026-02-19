@@ -122,6 +122,8 @@ messages:
 | `/respawn admin reset <玩家>` | `hardcorerespawn.admin` | 重置玩家死亡等待状态 |
 | `/respawn reload` | `hardcorerespawn.admin` | 重载配置文件 |
 
+可使用/hr /hardcorerespawn 作为指令别名
+
 ---
 
 ### 数据库结构

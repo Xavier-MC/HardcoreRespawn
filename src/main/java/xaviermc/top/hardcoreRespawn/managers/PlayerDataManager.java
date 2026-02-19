@@ -350,7 +350,7 @@ public class PlayerDataManager {
     }
 
     /**
-     * 结束等待期时调用，可选择是否恢复生命值
+     * 结束等待期时调用
      */
     public void endWaitingPeriod(Player player) {
         PlayerData data = playerDataMap.get(player.getUniqueId());
@@ -359,15 +359,14 @@ public class PlayerDataManager {
             data.setDeathTimestamp(0);
             plugin.getDatabaseManager().savePlayerData(data);
 
-            // 恢复玩家状态
+            // 恢复玩家状态 - 设置为生存模式
             player.setGameMode(GameMode.SURVIVAL);
 
-            // 如果一滴血模式已禁用，恢复最大生命值
-            if (!plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-                restoreNormalHealth(player);
+            // 如果一滴血模式已启用，保持最大生命值为2
+            if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
+                applyOneHeartMode(player);
             } else {
-                // 保持一滴血模式，但恢复满血
-                player.setHealth(1.0);
+                restoreNormalHealth(player);
             }
 
             player.sendMessage(getMessage("waiting_period_ended"));
@@ -375,7 +374,7 @@ public class PlayerDataManager {
     }
 
     /**
-     * 使用跳过命令时，同样处理生命值
+     * 使用跳过命令时
      */
     public boolean attemptSkip(Player player) {
         PlayerData data = playerDataMap.get(player.getUniqueId());
@@ -395,26 +394,38 @@ public class PlayerDataManager {
         data.setDeathTimestamp(0);
         plugin.getDatabaseManager().savePlayerData(data);
 
-        // 移除BossBar
+        // 移除 BossBar
         if (activeBossBars.containsKey(player.getUniqueId())) {
             activeBossBars.get(player.getUniqueId()).removeAll();
             activeBossBars.remove(player.getUniqueId());
         }
 
-        // 恢复玩家状态
+        // 恢复玩家状态 - 设置为生存模式
         player.setGameMode(GameMode.SURVIVAL);
 
-        // 如果一滴血模式已禁用，恢复最大生命值
-        if (!plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-            restoreNormalHealth(player);
+        // 如果一滴血模式已启用，保持最大生命值为2
+        if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
+            applyOneHeartMode(player);
         } else {
-            // 保持一滴血模式，恢复满血
-            player.setHealth(1.0);
+            restoreNormalHealth(player);
         }
 
         player.sendMessage(getMessage("skip_success")
                 .replace("{count}", String.valueOf(data.getRespawnCount())));
 
         return true;
+    }
+
+    /**
+     * 获取剩余等待时间（格式化字符串）
+     */
+    public String getRemainingTimeFormatted(Player player) {
+        PlayerData data = playerDataMap.get(player.getUniqueId());
+        if (data == null || !data.isWaiting()) {
+            return "0 秒";
+        }
+
+        long timeLeft = data.getTimeUntilRelease(System.currentTimeMillis());
+        return TimeUtils.formatTime(timeLeft);
     }
 }

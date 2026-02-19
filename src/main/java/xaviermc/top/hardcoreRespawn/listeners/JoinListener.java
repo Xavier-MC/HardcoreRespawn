@@ -1,3 +1,4 @@
+// src/main/java/xaviermc/top/hardcoreRespawn/listeners/JoinListener.java
 package xaviermc.top.hardcoreRespawn.listeners;
 
 import org.bukkit.GameMode;
@@ -33,26 +34,33 @@ public class JoinListener implements Listener {
         if (plugin.getPlayerDataManager().isInWaitingPeriod(player)) {
             Location spawnLocation = player.getWorld().getSpawnLocation();
             player.teleport(spawnLocation);
-            player.setGameMode(GameMode.ADVENTURE);
-            player.setAllowFlight(false);
-            player.setFlying(false);
+
+            // 设置为旁观者模式
+            player.setGameMode(GameMode.SPECTATOR);
 
             plugin.getPlayerDataManager().resumeWaitingPeriod(player);
+
+            player.sendMessage(plugin.getPlayerDataManager().getMessage("still_in_waiting_period")
+                    .replace("{time}", plugin.getPlayerDataManager().getRemainingTimeFormatted(player)));
         } else {
             // 如果是新玩家，给予初始复活次数
             plugin.getPlayerDataManager().initializeNewPlayer(player);
         }
     }
 
-    // 新增：监听世界切换事件，确保切换世界后仍保持一滴血模式
+    // 监听世界切换事件，确保切换世界后仍保持一滴血模式
     @EventHandler
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
         if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-            // 延迟一小段时间确保玩家完全加载到新世界
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 plugin.getPlayerDataManager().applyOneHeartMode(player);
+
+                // 如果在等待期，保持旁观者模式
+                if (plugin.getPlayerDataManager().isInWaitingPeriod(player)) {
+                    player.setGameMode(GameMode.SPECTATOR);
+                }
             }, 20L);
         }
     }

@@ -35,7 +35,19 @@ rewards:
       count: 1
     PHANTOM:
       chance: 0.2
-      count: 1
+
+  # 等待期指令白名单（等待期玩家只能使用这些指令）
+  command_whitelist:
+    - "msg"
+    - "tell"
+    - "r"
+    - "reply"
+    - "spawn"
+    - "respawn"
+    - "rules"
+    - "help"
+    - "hr"
+    - "hardcorerespawn"
 
 # 消息配置
 messages:

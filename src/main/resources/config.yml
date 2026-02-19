@@ -5,7 +5,7 @@ settings:
   # 死亡等待时间（小时）
   wait_time_hours: 24
 
-  # 一滴血模式 - 将玩家最大生命值永久限制为1颗心（2点生命值）
+  # 一滴血模式 - 将玩家最大生命值永久限制为1点生命值
   one_heart:
     enabled: true                    # 是否启用一滴血模式
     speed_reduction: 0.2             # 移动速度降低比例（20%）

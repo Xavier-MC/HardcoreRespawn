@@ -54,10 +54,16 @@ settings:
     - "respawn info"
     - "hardcorerespawn skip"
     - "hardcorerespawn info"
+    - "l"
+    - "login"
+    - "reg"
+    - "register"
 
   # 在线时间累计复活次数设置
   online_time_reward:
     enabled: true                    # 是否启用在线时间奖励
+    offline: false                   # 离线时是否也进行计时
+    reward_counts: 1                  # 每次奖励的次数
     required_time:
       hours: 24               # 小时
       minutes: 0              # 分钟

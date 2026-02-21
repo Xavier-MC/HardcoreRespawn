@@ -397,10 +397,16 @@ public class PlayerDataManager {
         if (data != null) {
             long currentTime = System.currentTimeMillis();
             long timeElapsed = currentTime - data.getLastLogin();
-            
+            int maxStacks = plugin.getConfig().getInt("settings.online_time_reward.max_stacks", 3);
             // 只更新正数的时间差
             if (timeElapsed > 0) {
-                data.setTotalOnlineTime(data.getTotalOnlineTime() + timeElapsed);
+                //只在复活次数未满时记录在线时长
+                if (data.getRespawnCount()<maxStacks){
+                    data.setTotalOnlineTime(data.getTotalOnlineTime() + timeElapsed);
+                }else{
+                    data.setTotalOnlineTime(0);
+                }
+                //无论在线时长是否变化，更新时间戳
                 data.setLastLogin(currentTime);
                 plugin.getDatabaseManager().savePlayerData(data);
             }
@@ -424,23 +430,10 @@ public class PlayerDataManager {
         // 计算所需的毫秒数
         long requiredMillis = (requiredHours * 60 + requiredMinutes) * 60 * 1000;
 
-        // 获取当前时间和上次获得奖励的时间
-        long currentTime = System.currentTimeMillis();
-        long lastRewardTime = data.getLastOnlineReward();
-        long timeElapsed = currentTime - lastRewardTime;
-
-        // 检查是否已经达到最大叠加次数
-        if (data.getRespawnCount() >= maxStacks) {
-            // 如果已经达到最大值，更新上次奖励时间以避免重复检查
-            data.setLastOnlineReward(currentTime);
-            plugin.getDatabaseManager().savePlayerData(data);
-            return;
-        }
-
         // 检查是否达到了获得奖励的时间
-        if (timeElapsed >= requiredMillis) {
+        if (data.getTotalOnlineTime() >= requiredMillis) {
             // 计算可以获得的奖励次数
-            int rewardCount = 1;
+            int rewardCount = plugin.getConfig().getInt("settings.online_time_reward.reward_counts", 1);
             
             // 计算新的复活次数，确保不超过最大值
             int newRespawnCount = Math.min(data.getRespawnCount() + rewardCount, maxStacks);
@@ -448,8 +441,6 @@ public class PlayerDataManager {
             if (newRespawnCount > data.getRespawnCount()) {
                 // 更新复活次数
                 data.setRespawnCount(newRespawnCount);
-                // 更新上次获得奖励的时间
-                data.setLastOnlineReward(currentTime);
                 plugin.getDatabaseManager().savePlayerData(data);
                 
                 // 通知玩家获得了复活次数

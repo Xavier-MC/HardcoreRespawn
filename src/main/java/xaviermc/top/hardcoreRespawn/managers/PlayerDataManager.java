@@ -38,16 +38,27 @@ public class PlayerDataManager {
                 // 检查离线期间是否需要恢复复活次数
                 checkOfflineRespawnRecovery(player, data);
                 playerDataMap.put(player.getUniqueId(), data);
-                plugin.getDatabaseManager().savePlayerData(data);
                 // 应用保存的生命值上限
                 applySavedMaxHealth(player, data);
+                // 确保当前生命值为最大生命值
+                if (player.getHealth() != data.getMaxHealth()) {
+                    player.setHealth(data.getMaxHealth());
+                }
+                // 保存玩家数据（包括可能从旧数据库更新的生命值上限）
+                plugin.getDatabaseManager().savePlayerData(data);
             } else {
                 // 创建新玩家数据
                 PlayerData newData = new PlayerData(player.getUniqueId(), player.getName());
+                // 设置默认生命值上限
+                double defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 1.0);
+                newData.setMaxHealth(defaultMaxHealth);
                 playerDataMap.put(player.getUniqueId(), newData);
-                plugin.getDatabaseManager().savePlayerData(newData);
                 // 应用默认生命值上限
                 applySavedMaxHealth(player, newData);
+                // 确保当前生命值为最大生命值
+                player.setHealth(newData.getMaxHealth());
+                // 保存玩家数据
+                plugin.getDatabaseManager().savePlayerData(newData);
             }
         });
     }
@@ -553,10 +564,8 @@ public class PlayerDataManager {
         } else {
             // 否则应用保存的生命值上限
             player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(data.getMaxHealth());
-            // 确保当前生命值不超过最大值
-            if (player.getHealth() > data.getMaxHealth()) {
-                player.setHealth(data.getMaxHealth());
-            }
+            // 确保当前生命值为最大生命值
+            player.setHealth(data.getMaxHealth());
         }
     }
 
@@ -573,10 +582,8 @@ public class PlayerDataManager {
             // 应用新的生命值上限
             if (!plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
                 player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
-                // 确保当前生命值不超过最大值
-                if (player.getHealth() > maxHealth) {
-                    player.setHealth(maxHealth);
-                }
+                // 确保当前生命值为最大生命值
+                player.setHealth(maxHealth);
             }
         }
     }

@@ -117,7 +117,7 @@ public class DatabaseManager {
                     data.setMaxHealth(rs.getDouble("max_health"));
                 } catch (SQLException e) {
                     // 使用配置文件中的默认值
-                    double defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 2.0);
+                    double defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 1.0);
                     data.setMaxHealth(defaultMaxHealth);
                 }
                 data.setNewPlayer(rs.getBoolean("is_new_player"));

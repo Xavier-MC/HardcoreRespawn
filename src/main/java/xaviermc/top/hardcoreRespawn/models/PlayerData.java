@@ -27,7 +27,7 @@ public class PlayerData {
         this.totalOnlineTime = 0;
         this.lastOnlineReward = System.currentTimeMillis(); // 初始化上次在线奖励时间为当前时间
         this.lastRespawnRecovery = System.currentTimeMillis(); // 初始化上次恢复时间为当前时间
-        this.maxHealth = 20.0; // 临时默认值，将在加载时被覆盖
+        this.maxHealth = 1.0; // 临时默认值，将在加载时被覆盖
         this.isNewPlayer = true;
     }
 

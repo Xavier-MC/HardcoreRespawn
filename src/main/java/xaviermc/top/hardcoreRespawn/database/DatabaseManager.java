@@ -103,6 +103,14 @@ public class DatabaseManager {
                 } catch (SQLException e) {
                     data.setLastRespawnRecovery(System.currentTimeMillis());
                 }
+                // 兼容旧数据库，检查是否存在 max_health 字段
+                try {
+                    data.setMaxHealth(rs.getDouble("max_health"));
+                } catch (SQLException e) {
+                    // 使用配置文件中的默认值
+                    double defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 2.0);
+                    data.setMaxHealth(defaultMaxHealth);
+                }
                 data.setNewPlayer(rs.getBoolean("is_new_player"));
                 return data;
             }
@@ -140,6 +148,14 @@ public class DatabaseManager {
                 } catch (SQLException e) {
                     data.setLastRespawnRecovery(System.currentTimeMillis());
                 }
+                // 兼容旧数据库，检查是否存在 max_health 字段
+                try {
+                    data.setMaxHealth(rs.getDouble("max_health"));
+                } catch (SQLException e) {
+                    // 使用配置文件中的默认值
+                    double defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 1.0);
+                    data.setMaxHealth(defaultMaxHealth);
+                }
                 data.setNewPlayer(rs.getBoolean("is_new_player"));
                 return data;
             }
@@ -154,8 +170,8 @@ public class DatabaseManager {
         try {
             String sql = """
                 INSERT OR REPLACE INTO player_data 
-                (uuid, player_name, respawn_count, death_timestamp, is_waiting, wait_duration, last_login, total_online_time, last_respawn_recovery, is_new_player)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (uuid, player_name, respawn_count, death_timestamp, is_waiting, wait_duration, last_login, total_online_time, last_respawn_recovery, max_health, is_new_player)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -168,7 +184,8 @@ public class DatabaseManager {
             stmt.setLong(7, data.getLastLogin());
             stmt.setLong(8, data.getTotalOnlineTime());
             stmt.setLong(9, data.getLastRespawnRecovery());
-            stmt.setBoolean(10, data.isNewPlayer());
+            stmt.setDouble(10, data.getMaxHealth());
+            stmt.setBoolean(11, data.isNewPlayer());
 
             stmt.executeUpdate();
             stmt.close();

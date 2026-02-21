@@ -13,6 +13,7 @@ public class PlayerData {
     private long totalOnlineTime; // 总在线时间（毫秒）
     private long lastOnlineReward; // 上次获得在线时间奖励的时间戳
     private long lastRespawnRecovery; // 上次恢复复活次数的时间戳
+    private double maxHealth; // 生命值上限
     private boolean isNewPlayer;
 
     public PlayerData(UUID uuid, String playerName) {
@@ -26,6 +27,7 @@ public class PlayerData {
         this.totalOnlineTime = 0;
         this.lastOnlineReward = System.currentTimeMillis(); // 初始化上次在线奖励时间为当前时间
         this.lastRespawnRecovery = System.currentTimeMillis(); // 初始化上次恢复时间为当前时间
+        this.maxHealth = 20.0; // 临时默认值，将在加载时被覆盖
         this.isNewPlayer = true;
     }
 
@@ -62,6 +64,9 @@ public class PlayerData {
 
     public boolean isNewPlayer() { return isNewPlayer; }
     public void setNewPlayer(boolean newPlayer) { isNewPlayer = newPlayer; }
+
+    public double getMaxHealth() { return maxHealth; }
+    public void setMaxHealth(double maxHealth) { this.maxHealth = maxHealth; }
 
     /**
      * 获取剩余等待时间（毫秒）

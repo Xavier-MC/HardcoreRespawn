@@ -57,12 +57,20 @@ public class PlayerDataManager {
         if (data != null && data.isNewPlayer()) {
             int defaultRespawnCount = plugin.getConfig().getInt("settings.default_respawn_count", 3);
             data.setRespawnCount(defaultRespawnCount); // 给予初始复活机会
+            
+            // 设置默认生命值上限
+            double defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 2.0);
+            data.setMaxHealth(defaultMaxHealth);
+            
             data.setNewPlayer(false);
             plugin.getDatabaseManager().savePlayerData(data);
             
             // 新玩家首次加入时应用一滴血模式
             if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
                 applyOneHeartMode(player);
+            } else {
+                // 应用默认生命值上限
+                applySavedMaxHealth(player, data);
             }
         }
     }
@@ -520,20 +528,6 @@ public class PlayerDataManager {
         player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20.0);
         player.setHealth(20.0);
         player.setWalkSpeed(0.2f);
-    }
-
-    public void applySavedMaxHealth(Player player, PlayerData data) {
-        if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-            // 如果一滴血模式启用，应用一滴血模式
-            applyOneHeartMode(player);
-        } else {
-            // 否则应用保存的生命值上限
-            player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(data.getMaxHealth());
-            // 确保当前生命值不超过最大值
-            if (player.getHealth() > data.getMaxHealth()) {
-                player.setHealth(data.getMaxHealth());
-            }
-        }
     }
 
     /**

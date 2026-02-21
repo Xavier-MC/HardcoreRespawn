@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import xaviermc.top.hardcoreRespawn.HardcoreRespawn;
 
 public class JoinListener implements Listener {
@@ -35,7 +34,7 @@ public class JoinListener implements Listener {
         // 应用生命值设置
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             // 加载玩家数据后应用生命值设置
-            plugin.getPlayerDataManager().loadPlayerData(player);
+            plugin.getPlayerDataManager().applySavedMaxHealth(player);
         }, 10L);
 
         // 检查玩家是否在等待期
@@ -68,10 +67,7 @@ public class JoinListener implements Listener {
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             // 应用生命值设置
-            PlayerData data = plugin.getPlayerDataManager().playerDataMap.get(player.getUniqueId());
-            if (data != null) {
-                plugin.getPlayerDataManager().applySavedMaxHealth(player, data);
-            }
+            plugin.getPlayerDataManager().applySavedMaxHealth(player);
 
             // 如果在等待期，保持配置的等待游戏模式
             if (plugin.getPlayerDataManager().isInWaitingPeriod(player)) {

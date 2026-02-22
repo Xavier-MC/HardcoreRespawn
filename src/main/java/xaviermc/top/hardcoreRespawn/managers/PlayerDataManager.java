@@ -443,9 +443,6 @@ public class PlayerDataManager {
                 data.setRespawnCount(newRespawnCount);
                 data.setTotalOnlineTime(0);
                 plugin.getDatabaseManager().savePlayerData(data);
-
-                // 从在线时长中减去所需的时间，确保不会重复奖励
-                data.setTotalOnlineTime(data.getTotalOnlineTime() - requiredMillis);
                 
                 // 通知玩家获得了复活次数
                 player.sendMessage(org.bukkit.ChatColor.GREEN + "你累计在线 " + requiredHours + " 小时 " + requiredMinutes + " 分钟 ，获得了 " + rewardCount + " 次复活机会！当前剩余: " + newRespawnCount + " 次");

@@ -1,10 +1,11 @@
 plugins {
     id 'java'
     id("xyz.jpenilla.run-paper") version "2.3.1"
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'xaviermc.top'
-version = '1.0.9'
+version = '1.1.0'
 
 repositories {
     mavenCentral()

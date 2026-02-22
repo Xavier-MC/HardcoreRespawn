@@ -1,4 +1,3 @@
-// src/main/java/xaviermc/top/hardcoreRespawn/HardcoreRespawn.java
 package xaviermc.top.hardcoreRespawn;
 
 import org.bukkit.entity.Player;
@@ -8,6 +7,8 @@ import xaviermc.top.hardcoreRespawn.listeners.*;
 import xaviermc.top.hardcoreRespawn.managers.PlayerDataManager;
 import xaviermc.top.hardcoreRespawn.database.DatabaseManager;
 import xaviermc.top.hardcoreRespawn.utils.MessageUtils;
+
+import java.util.List;
 
 public class HardcoreRespawn extends JavaPlugin {
     private static HardcoreRespawn instance;
@@ -45,10 +46,21 @@ public class HardcoreRespawn extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new LowHealthListener(this), this);
         getServer().getPluginManager().registerEvents(new CommandListener(this), this); // ← 新增
 
-        getLogger().info("HardcoreRespawn 插件已启用！");
-        getLogger().info("一滴血模式：" + getConfig().getBoolean("settings.one_heart.enabled", true));
-        getLogger().info("等待期模式：旁观者 + 指令白名单");
-        getLogger().info("Autheme兼容模式：" + getConfig().getBoolean("settings.authme_supported", false));
+        getLogger().info(MessageUtils.getLogMessage("log_plugin_enabled"));
+        getLogger().info(MessageUtils.getLogMessage("log_one_heart_mode", "status", getConfig().getBoolean("settings.one_heart.enabled", true)));
+
+        // 解析等待期模式
+        int waitTimeMode = getConfig().getInt("settings.wait_time_mode", 3);
+        String modeName = MessageUtils.getLogMessage("log_observer_mode");
+        if (waitTimeMode == 0) modeName = MessageUtils.getLogMessage("log_survival_mode");
+        else if (waitTimeMode == 2) modeName = MessageUtils.getLogMessage("log_adventure_mode");
+        // 检查指令白名单状态
+        List<String> commandWhitelist = getConfig().getStringList("settings.command_whitelist");
+        String whitelistStatus = commandWhitelist.isEmpty() ? MessageUtils.getLogMessage("log_whitelist_disabled") : MessageUtils.getLogMessage("log_whitelist_enabled");
+        
+        getLogger().info(MessageUtils.getLogMessage("log_wait_time_mode", "mode", modeName, "whitelist_status", whitelistStatus));
+
+        getLogger().info(MessageUtils.getLogMessage("log_authme_supported", "status", getConfig().getBoolean("settings.authme_supported", false)));
     }
 
     @Override
@@ -56,7 +68,7 @@ public class HardcoreRespawn extends JavaPlugin {
         if (databaseManager != null) {
             databaseManager.closeConnection();
         }
-        getLogger().info("HardcoreRespawn 插件已禁用！");
+        getLogger().info(MessageUtils.getLogMessage("log_plugin_disabled"));
     }
 
     public static HardcoreRespawn getInstance() {
@@ -95,7 +107,7 @@ public class HardcoreRespawn extends JavaPlugin {
             }
         } catch (Exception e) {
             // 如果AuthMe插件不存在或API调用失败，默认返回false
-            getInstance().getLogger().fine("AuthMe插件未找到或API调用失败，默认视为玩家已登录");
+            getInstance().getLogger().fine(MessageUtils.getLogMessage("log_authme_not_found"));
         }
 
         return false;
@@ -123,19 +135,19 @@ public class HardcoreRespawn extends JavaPlugin {
                 defaultVersion = defaultConfig.getString("version", "0.0");
                 resourceStream.close();
             } else {
-                getLogger().severe("无法获取默认配置文件资源！");
+                getLogger().severe(MessageUtils.getLogMessage("log_config_resource_error"));
                 return;
             }
         } catch (Exception e) {
-            getLogger().severe("加载默认配置文件时出错: " + e.getMessage());
+            getLogger().severe(MessageUtils.getLogMessage("log_config_load_error", "error", e.getMessage()));
             e.printStackTrace();
             return;
         }
         
         // 比较版本
         if (!currentVersion.equals(defaultVersion)) {
-            getLogger().warning("检测到配置文件版本不匹配！当前版本: " + currentVersion + "，默认版本: " + defaultVersion);
-            getLogger().warning("正在替换为默认配置文件...");
+            getLogger().warning(MessageUtils.getLogMessage("log_config_version_mismatch", "current", currentVersion, "default", defaultVersion));
+            getLogger().warning(MessageUtils.getLogMessage("log_config_replaced", "current", currentVersion, "default", defaultVersion));
             
             // 重命名旧配置文件为config-old.yml
             java.io.File oldConfigFile = new java.io.File(getDataFolder(), "config.yml");
@@ -148,17 +160,17 @@ public class HardcoreRespawn extends JavaPlugin {
             
             if (oldConfigFile.exists()) {
                 if (!oldConfigFile.renameTo(backupConfigFile)) {
-                    getLogger().severe("无法重命名旧配置文件！");
-                    return;
-                }
-                getLogger().info("旧配置文件已备份为: config-old.yml");
+                getLogger().severe(MessageUtils.getLogMessage("log_config_rename_error"));
+                return;
+            }
+            getLogger().info(MessageUtils.getLogMessage("log_config_backup"));
             }
             
             // 保存新的默认配置文件
             saveDefaultConfig();
             reloadConfig();
             
-            getLogger().info("配置文件已更新至版本: " + defaultVersion);
+            getLogger().info(MessageUtils.getLogMessage("log_config_updated", "version", defaultVersion));
         }
     }
 }

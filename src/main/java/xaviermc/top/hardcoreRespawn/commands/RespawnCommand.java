@@ -108,28 +108,28 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
     private boolean showHelp(CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            player.sendMessage(MessageUtils.getColoredMessage("&a--- 硬核复活插件 ---"));
-            player.sendMessage(MessageUtils.getColoredMessage("&e/respawn info &7- 查看复活信息"));
-            player.sendMessage(MessageUtils.getColoredMessage("&e/respawn skip &7- 跳过等待时间"));
+            player.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_header")));
+            player.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_info")));
+            player.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_skip")));
         } else {
-            sender.sendMessage(MessageUtils.getColoredMessage("&a--- 硬核复活插件 ---"));
-            sender.sendMessage(MessageUtils.getColoredMessage("&e/respawn admin add <玩家> <数量> &7- 添加复活次数"));
-            sender.sendMessage(MessageUtils.getColoredMessage("&e/respawn admin set <玩家> <数量> &7- 设置复活次数"));
-            sender.sendMessage(MessageUtils.getColoredMessage("&e/respawn admin reset <玩家> &7- 重置玩家状态"));
-            sender.sendMessage(MessageUtils.getColoredMessage("&e/respawn reload &7- 重载配置"));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_header")));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_add")));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_set")));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_reset")));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_reload")));
         }
         return true;
     }
 
     private boolean handleSkip(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageUtils.getColoredMessage("&c此命令只能由玩家执行！"));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_only_player")));
             return true;
         }
 
         Player player = (Player) sender;
         if (!player.hasPermission("hardcorerespawn.skip")) {
-            player.sendMessage(MessageUtils.getColoredMessage("&c你没有权限执行此命令！"));
+            player.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_no_permission")));
             return true;
         }
 
@@ -138,13 +138,13 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
 
     private boolean handleInfo(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageUtils.getColoredMessage("&c此命令只能由玩家执行！"));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_only_player")));
             return true;
         }
 
         Player player = (Player) sender;
         if (!player.hasPermission("hardcorerespawn.info")) {
-            player.sendMessage(MessageUtils.getColoredMessage("&c你没有权限执行此命令！"));
+            player.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_no_permission")));
             return true;
         }
 
@@ -154,7 +154,7 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
 
     private boolean handleAdmin(CommandSender sender, String[] args) {
         if (!sender.hasPermission("hardcorerespawn.admin")) {
-            sender.sendMessage(MessageUtils.getColoredMessage("&c你没有权限执行此命令！"));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_no_permission")));
             return true;
         }
 
@@ -203,7 +203,7 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
 
     private boolean handleReload(CommandSender sender, String[] args) {
         if (!sender.hasPermission("hardcorerespawn.admin")) {
-            sender.sendMessage(MessageUtils.getColoredMessage("&c你没有权限执行此命令！"));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_no_permission")));
             return true;
         }
 

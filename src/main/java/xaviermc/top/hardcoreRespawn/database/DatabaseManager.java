@@ -2,6 +2,7 @@ package xaviermc.top.hardcoreRespawn.database;
 
 import org.bukkit.plugin.Plugin;
 import xaviermc.top.hardcoreRespawn.models.PlayerData;
+import xaviermc.top.hardcoreRespawn.utils.MessageUtils;
 
 import java.io.File;
 import java.sql.*;
@@ -62,26 +63,26 @@ public class DatabaseManager {
             // 如果不存在total_online_time字段，添加它
             if (!hasTotalOnlineTime) {
                 stmt.execute("ALTER TABLE player_data ADD COLUMN total_online_time LONG DEFAULT 0");
-                plugin.getLogger().info("已添加total_online_time字段到数据库表");
+                plugin.getLogger().info(MessageUtils.getLogMessage("log_column_added", "total_online_time"));
             }
 
             // 如果不存在last_respawn_recovery字段，添加它
             if (!hasLastRespawnRecovery) {
                 stmt.execute("ALTER TABLE player_data ADD COLUMN last_respawn_recovery LONG DEFAULT 0");
-                plugin.getLogger().info("已添加last_respawn_recovery字段到数据库表");
+                plugin.getLogger().info(MessageUtils.getLogMessage("log_column_added", "last_respawn_recovery"));
             }
 
             // 如果不存在max_health字段，添加它
             if (!hasMaxHealth) {
                 stmt.execute("ALTER TABLE player_data ADD COLUMN max_health DOUBLE DEFAULT 20.0");
-                plugin.getLogger().info("已添加max_health字段到数据库表");
+                plugin.getLogger().info(MessageUtils.getLogMessage("log_column_added", "max_health"));
             }
 
             stmt.close();
 
-            plugin.getLogger().info("数据库初始化成功！");
+            plugin.getLogger().info(MessageUtils.getLogMessage("log_database_initialized"));
         } catch (Exception e) {
-            plugin.getLogger().severe("数据库初始化失败: " + e.getMessage());
+            plugin.getLogger().severe(MessageUtils.getLogMessage("log_database_init_failed", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -124,7 +125,7 @@ public class DatabaseManager {
                 return data;
             }
         } catch (SQLException e) {
-            plugin.getLogger().severe("获取玩家数据失败: " + e.getMessage());
+            plugin.getLogger().severe(MessageUtils.getLogMessage("log_get_player_data_failed", e.getMessage()));
             e.printStackTrace();
         }
         return null;
@@ -169,7 +170,7 @@ public class DatabaseManager {
                 return data;
             }
         } catch (SQLException e) {
-            plugin.getLogger().severe("获取玩家数据失败: " + e.getMessage());
+            plugin.getLogger().severe(MessageUtils.getLogMessage("log_get_player_data_failed", e.getMessage()));
             e.printStackTrace();
         }
         return null;
@@ -199,7 +200,7 @@ public class DatabaseManager {
             stmt.executeUpdate();
             stmt.close();
         } catch (SQLException e) {
-            plugin.getLogger().severe("保存玩家数据失败: " + e.getMessage());
+            plugin.getLogger().severe(MessageUtils.getLogMessage("log_save_player_data_failed", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -210,7 +211,7 @@ public class DatabaseManager {
                 connection.close();
             }
         } catch (SQLException e) {
-            plugin.getLogger().severe("关闭数据库连接失败: " + e.getMessage());
+            plugin.getLogger().severe(MessageUtils.getLogMessage("log_close_connection_failed", e.getMessage()));
             e.printStackTrace();
         }
     }

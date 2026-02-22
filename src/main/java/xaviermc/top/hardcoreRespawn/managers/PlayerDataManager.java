@@ -13,6 +13,7 @@ import xaviermc.top.hardcoreRespawn.models.PlayerData;
 import xaviermc.top.hardcoreRespawn.utils.MessageUtils;
 import xaviermc.top.hardcoreRespawn.utils.TimeUtils;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -199,11 +200,12 @@ public class PlayerDataManager {
             return;
         }
 
-        player.sendMessage(MessageUtils.getColoredMessage("&a=== 复活信息 ==="));
+        player.sendMessage(MessageUtils.getColoredMessage(getMessage("info_header")));
         player.sendMessage(getMessage("info_respawn_count")
                 .replace("{count}", String.valueOf(data.getRespawnCount())));
-        // 显示生命值上限信息
-        player.sendMessage(MessageUtils.getColoredMessage("&a生命值上限: " + data.getMaxHealth() + " (" + (data.getMaxHealth() / 2) + " 颗心)"));
+        player.sendMessage(MessageUtils.getColoredMessage(getMessage("info_health")
+                .replace("{health}", String.valueOf(data.getMaxHealth()))
+                .replace("{hearts}", String.valueOf(data.getMaxHealth() / 2))));
 
         // 显示在线时间信息
         if (plugin.getConfig().getBoolean("settings.online_time_reward.enabled", true)) {
@@ -219,8 +221,9 @@ public class PlayerDataManager {
             long remainingHours = remainingMillis / (60 * 60 * 1000);
             long remainingMinutes = (remainingMillis % (60 * 60 * 1000)) / (60 * 1000);
             
-            player.sendMessage(MessageUtils.getColoredMessage("&a累计在线时间: " + totalHours + " 小时 " + totalMinutes + " 分钟"));
-            player.sendMessage(MessageUtils.getColoredMessage("&a距离下次获得复活机会: " + remainingHours + " 小时 " + remainingMinutes + " 分钟"));
+//            player.sendMessage(MessageUtils.getColoredMessage("&a累计在线时间: " + totalHours + " 小时 " + totalMinutes + " 分钟"));
+            player.sendMessage(MessageUtils.getColoredMessage(getMessage("info_next_reward")
+                    .replace("{time}", remainingHours + " 小时 " + remainingMinutes + " 分钟")));
         }
 
         if (data.isWaiting()) {
@@ -354,7 +357,12 @@ public class PlayerDataManager {
     }
 
     public String getMessage(String key) {
-        return plugin.getConfig().getString("messages." + key, key);
+        HardcoreRespawn plugin = HardcoreRespawn.getInstance();
+        File messagesFile = new File(plugin.getDataFolder(), "messages.yml");
+        org.bukkit.configuration.file.FileConfiguration messagesConfig = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(messagesFile);
+
+        // 从messages.yml获取消息，如果不存在则返回默认值
+        return messagesConfig.getString("messages." + key, key);
     }
 
     private void startPeriodicSaveTask() {
@@ -437,15 +445,23 @@ public class PlayerDataManager {
             
             // 计算新的复活次数，确保不超过最大值
             int newRespawnCount = Math.min(data.getRespawnCount() + rewardCount, maxStacks);
+<<<<<<< master
             data.setTotalOnlineTime(0);
             
+=======
+
+>>>>>>> master
             if (newRespawnCount > data.getRespawnCount()) {
                 // 更新复活次数
                 data.setRespawnCount(newRespawnCount);
+                data.setTotalOnlineTime(0);
                 plugin.getDatabaseManager().savePlayerData(data);
                 
                 // 通知玩家获得了复活次数
-                player.sendMessage(org.bukkit.ChatColor.GREEN + "你累计在线 " + requiredHours + " 小时 " + requiredMinutes + " 分钟 ，获得了 " + rewardCount + " 次复活机会！当前剩余: " + newRespawnCount + " 次");
+                player.sendMessage(MessageUtils.getColoredMessage(getMessage("reward_online_time")
+                        .replace("{time}", requiredHours + " 小时 " + requiredMinutes + " 分钟")
+                        .replace("{count}", String.valueOf(rewardCount))
+                        .replace("{total}", String.valueOf(newRespawnCount))));
             }
         }
     }

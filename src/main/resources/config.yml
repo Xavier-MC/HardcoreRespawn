@@ -6,8 +6,9 @@ settings:
   default_respawn_count: 3
 
   # 默认生命值上限
-  default_max_health: 1.0  # 死亡等待时间
+  default_max_health: 1.0
 
+  # 死亡等待时间
   wait_time:
     hours: 24               # 小时
     minutes: 0              # 分钟

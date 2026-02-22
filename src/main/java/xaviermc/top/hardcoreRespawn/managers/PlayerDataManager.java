@@ -441,6 +441,7 @@ public class PlayerDataManager {
             if (newRespawnCount > data.getRespawnCount()) {
                 // 更新复活次数
                 data.setRespawnCount(newRespawnCount);
+                data.setTotalOnlineTime(0);
                 plugin.getDatabaseManager().savePlayerData(data);
 
                 // 从在线时长中减去所需的时间，确保不会重复奖励

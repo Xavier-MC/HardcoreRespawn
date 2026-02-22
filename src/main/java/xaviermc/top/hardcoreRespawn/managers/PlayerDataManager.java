@@ -437,11 +437,11 @@ public class PlayerDataManager {
             
             // 计算新的复活次数，确保不超过最大值
             int newRespawnCount = Math.min(data.getRespawnCount() + rewardCount, maxStacks);
+            data.setTotalOnlineTime(0);
             
             if (newRespawnCount > data.getRespawnCount()) {
                 // 更新复活次数
                 data.setRespawnCount(newRespawnCount);
-                data.setTotalOnlineTime(0);
                 plugin.getDatabaseManager().savePlayerData(data);
                 
                 // 通知玩家获得了复活次数

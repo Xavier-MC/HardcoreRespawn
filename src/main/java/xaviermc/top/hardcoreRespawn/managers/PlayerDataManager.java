@@ -219,7 +219,7 @@ public class PlayerDataManager {
             long remainingHours = remainingMillis / (60 * 60 * 1000);
             long remainingMinutes = (remainingMillis % (60 * 60 * 1000)) / (60 * 1000);
             
-            player.sendMessage(MessageUtils.getColoredMessage("&a累计在线时间: " + totalHours + " 小时 " + totalMinutes + " 分钟"));
+//            player.sendMessage(MessageUtils.getColoredMessage("&a累计在线时间: " + totalHours + " 小时 " + totalMinutes + " 分钟"));
             player.sendMessage(MessageUtils.getColoredMessage("&a距离下次获得复活机会: " + remainingHours + " 小时 " + remainingMinutes + " 分钟"));
         }
 

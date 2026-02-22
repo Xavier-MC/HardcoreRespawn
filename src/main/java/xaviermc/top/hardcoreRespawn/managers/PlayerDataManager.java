@@ -445,12 +445,8 @@ public class PlayerDataManager {
             
             // 计算新的复活次数，确保不超过最大值
             int newRespawnCount = Math.min(data.getRespawnCount() + rewardCount, maxStacks);
-<<<<<<< master
             data.setTotalOnlineTime(0);
-            
-=======
 
->>>>>>> master
             if (newRespawnCount > data.getRespawnCount()) {
                 // 更新复活次数
                 data.setRespawnCount(newRespawnCount);

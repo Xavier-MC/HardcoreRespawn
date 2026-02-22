@@ -484,6 +484,7 @@ public class PlayerDataManager {
             if (newRespawnCount > data.getRespawnCount()) {
                 // 更新复活次数
                 data.setRespawnCount(newRespawnCount);
+                data.setTotalOnlineTime(0);
                 plugin.getDatabaseManager().savePlayerData(data);
                 
                 // 通知玩家获得了复活次数

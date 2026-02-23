@@ -450,11 +450,22 @@ public class PlayerDataManager {
             // 只更新正数的时间差
             if (timeElapsed > 0) {
                 //只在复活次数未满时记录在线时长
-                if (data.getRespawnCount()<maxStacks){
-                    data.setTotalOnlineTime(data.getTotalOnlineTime() + timeElapsed);
+                if (plugin.getConfig().getBoolean("settings.online_time_reward.while_waiting",false)){
+                    if (data.getRespawnCount()<maxStacks){
+                        data.setTotalOnlineTime(data.getTotalOnlineTime() + timeElapsed);
+                    }else{
+                        data.setTotalOnlineTime(0);
+                    }
+                }else if (!plugin.getPlayerDataManager().isInWaitingPeriod(player)){
+                    if (data.getRespawnCount()<maxStacks){
+                        data.setTotalOnlineTime(data.getTotalOnlineTime() + timeElapsed);
+                    }else{
+                        data.setTotalOnlineTime(0);
+                    }
                 }else{
                     data.setTotalOnlineTime(0);
                 }
+
                 //无论在线时长是否变化，更新时间戳
                 data.setLastLogin(currentTime);
                 plugin.getDatabaseManager().savePlayerData(data);
@@ -491,7 +502,6 @@ public class PlayerDataManager {
             if (newRespawnCount > data.getRespawnCount()) {
                 // 更新复活次数
                 data.setRespawnCount(newRespawnCount);
-                data.setTotalOnlineTime(0);
                 plugin.getDatabaseManager().savePlayerData(data);
                 
                 // 通知玩家获得了复活次数

@@ -98,9 +98,6 @@ public class JoinListener implements Listener {
                         player.setGameMode(GameMode.SPECTATOR);
                         break;
                 }
-            }else{
-                // 不在等待期，强制切回生存
-                player.setGameMode(GameMode.SURVIVAL);
             }
         }, 20L);
     }

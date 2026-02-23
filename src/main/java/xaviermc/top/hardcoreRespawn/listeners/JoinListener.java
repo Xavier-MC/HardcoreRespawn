@@ -62,6 +62,7 @@ public class JoinListener implements Listener {
             player.sendMessage(plugin.getPlayerDataManager().getMessage("still_in_waiting_period")
                     .replace("{time}", plugin.getPlayerDataManager().getRemainingTimeFormatted(player)));
         } else {
+            player.setGameMode(GameMode.SURVIVAL);
             // 如果是新玩家，给予初始复活次数
             plugin.getPlayerDataManager().initializeNewPlayer(player);
         }

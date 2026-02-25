@@ -86,19 +86,21 @@ public class PlayerDataManager {
             data.setRespawnCount(defaultRespawnCount); // 给予初始复活机会
             
             // 设置默认生命值上限
-            double defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 2.0);
+            double defaultMaxHealth;
+            if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
+                // 如果启用一滴血模式，则使用配置文件中的默认生命上限
+                defaultMaxHealth = plugin.getConfig().getDouble("settings.default_max_health", 1.0);
+            } else {
+                // 否则使用20滴血（正常生命值）
+                defaultMaxHealth = 20.0;
+            }
             data.setMaxHealth(defaultMaxHealth);
             
             data.setNewPlayer(false);
             plugin.getDatabaseManager().savePlayerData(data);
             
-            // 新玩家首次加入时应用一滴血模式
-            if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-                applyOneHeartMode(player);
-            } else {
-                // 应用默认生命值上限
-                applySavedMaxHealth(player, data);
-            }
+            // 应用生命值设置
+            applySavedMaxHealth(player, data);
         }
     }
 
@@ -523,7 +525,7 @@ public class PlayerDataManager {
     }
 
     /**
-     * 应用一滴血模式 - 将玩家最大生命值设置为1
+     * 应用一滴血模式 - 将玩家最大生命值设置为配置的默认值
      * @param player 目标玩家
      */
     public void applyOneHeartMode(Player player) {
@@ -531,12 +533,15 @@ public class PlayerDataManager {
             return;
         }
 
-        // 设置最大生命值为1
-        player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(1.0);
+        PlayerData data = playerDataMap.get(player.getUniqueId());
+        if (data != null) {
+            // 设置最大生命值为数据库中存储的值
+            player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(data.getMaxHealth());
 
-        // 确保当前生命值不超过最大值
-        if (player.getHealth() > 1.0) {
-            player.setHealth(1.0);
+            // 确保当前生命值不超过最大值
+            if (player.getHealth() > data.getMaxHealth()) {
+                player.setHealth(data.getMaxHealth());
+            }
         }
 
         // 应用速度降低效果（如果启用）
@@ -573,15 +578,10 @@ public class PlayerDataManager {
      * @param data 玩家数据
      */
     public void applySavedMaxHealth(Player player, PlayerData data) {
-        if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-            // 如果一滴血模式启用，应用一滴血模式
-            applyOneHeartMode(player);
-        } else {
-            // 否则应用保存的生命值上限
-            player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(data.getMaxHealth());
-            // 确保当前生命值为最大生命值
-            player.setHealth(data.getMaxHealth());
-        }
+        // 按照数据库存储的生命上限设置其的最高血量
+        player.getAttribute(Attribute.MAX_HEALTH).setBaseValue(data.getMaxHealth());
+        // 确保当前生命值为最大生命值
+        player.setHealth(data.getMaxHealth());
     }
 
     /**
@@ -626,13 +626,8 @@ public class PlayerDataManager {
             // 恢复玩家状态 - 设置为生存模式
             player.setGameMode(GameMode.SURVIVAL);
 
-            // 如果一滴血模式已启用，保持最大生命值为1
-            if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-                applyOneHeartMode(player);
-            } else {
-                // 应用保存的生命值上限
-                applySavedMaxHealth(player, data);
-            }
+            // 按照数据库存储的生命上限设置其的最高血量
+            applySavedMaxHealth(player, data);
 
             player.sendMessage(getMessage("waiting_period_ended"));
         }
@@ -668,13 +663,8 @@ public class PlayerDataManager {
         // 恢复玩家状态 - 设置为生存模式
         player.setGameMode(GameMode.SURVIVAL);
 
-        // 如果一滴血模式已启用，保持最大生命值为1
-        if (plugin.getConfig().getBoolean("settings.one_heart.enabled", true)) {
-            applyOneHeartMode(player);
-        } else {
-            // 应用保存的生命值上限
-            applySavedMaxHealth(player, data);
-        }
+        // 按照数据库存储的生命上限设置其的最高血量
+        applySavedMaxHealth(player, data);
 
         player.sendMessage(getMessage("skip_success")
                 .replace("{count}", String.valueOf(data.getRespawnCount())));

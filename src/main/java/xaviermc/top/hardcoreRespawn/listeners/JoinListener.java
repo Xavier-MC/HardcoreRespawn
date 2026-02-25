@@ -1,4 +1,3 @@
-// src/main/java/xaviermc/top/hardcoreRespawn/listeners/JoinListener.java
 package xaviermc.top.hardcoreRespawn.listeners;
 
 import org.bukkit.GameMode;

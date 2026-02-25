@@ -147,6 +147,9 @@ rewards:
 | `/respawn admin add <玩家> <数量>` | `hardcorerespawn.admin` | 给玩家添加复活次数 |
 | `/respawn admin set <玩家> <数量>` | `hardcorerespawn.admin` | 设置玩家复活次数 |
 | `/respawn admin reset <玩家>` | `hardcorerespawn.admin` | 重置玩家死亡等待状态 |
+| `/respawn admin removehealth <玩家> <数量>` | `hardcorerespawn.admin` | 给玩家减少生命值上限 |
+| `/respawn admin sethealth <玩家> <数量>` | `hardcorerespawn.admin` | 设置玩家生命值上限 |
+| `/respawn admin addhealth <玩家> <数量>` | `hardcorerespawn.admin` | 给玩家添加生命值上限 |
 | `/respawn reload` | `hardcorerespawn.admin` | 重载配置文件 |
 
 可使用/hr /hardcorerespawn 作为指令别名

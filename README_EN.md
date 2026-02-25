@@ -147,6 +147,9 @@ rewards:
 | `/respawn admin add <player> <count>` | `hardcorerespawn.admin` | Add respawn counts to player |
 | `/respawn admin set <player> <count>` | `hardcorerespawn.admin` | Set player respawn counts |
 | `/respawn admin reset <player>` | `hardcorerespawn.admin` | Reset player death waiting status |
+| `/respawn admin sethealth <player> <amount>` | `hardcorerespawn.admin` | Set player health points |
+| `/respawn admin addhealth <player> <amount>` | `hardcorerespawn.admin` | Add health points to player |
+| `/respawn admin removehealth <player> <amount>` | `hardcorerespawn.admin` | Remove health points from player |
 | `/respawn reload` | `hardcorerespawn.admin` | Reload configuration file |
 
 `/hr` and `/hardcorerespawn` can be used as command aliases

@@ -401,6 +401,154 @@ public class PlayerDataManager {
         }
     }
 
+    public void adminAddMaxHealth(String playerName, double amount, org.bukkit.command.CommandSender sender) {
+        Player targetPlayer = Bukkit.getPlayer(playerName);
+        if (targetPlayer != null) {
+            PlayerData data = playerDataMap.get(targetPlayer.getUniqueId());
+            if (data != null) {
+                double newMaxHealth = data.getMaxHealth() + amount;
+                // 确保生命值上限不小于1
+                newMaxHealth = Math.max(1.0, newMaxHealth);
+                
+                data.setMaxHealth(newMaxHealth);
+                plugin.getDatabaseManager().savePlayerData(data);
+
+                // 应用新的生命值上限
+                applySavedMaxHealth(targetPlayer, data);
+
+                targetPlayer.sendMessage(getMessage("admin_max_health_added")
+                        .replace("{amount}", String.valueOf(amount))
+                        .replace("{total}", String.valueOf(newMaxHealth)));
+
+                sender.sendMessage(getMessage("admin_max_health_added_console")
+                        .replace("{player}", playerName)
+                        .replace("{amount}", String.valueOf(amount))
+                        .replace("{total}", String.valueOf(newMaxHealth)));
+            }
+        } else {
+            // 玩家不在线，直接从数据库更新
+            CompletableFuture.supplyAsync(() -> {
+                PlayerData data = plugin.getDatabaseManager().getPlayerDataByName(playerName);
+                if (data != null) {
+                    double newMaxHealth = data.getMaxHealth() + amount;
+                    // 确保生命值上限不小于1
+                    newMaxHealth = Math.max(1.0, newMaxHealth);
+                    
+                    data.setMaxHealth(newMaxHealth);
+                    plugin.getDatabaseManager().savePlayerData(data);
+                    return data;
+                }
+                return null;
+            }).thenAccept(data -> {
+                if (data != null) {
+                    sender.sendMessage(getMessage("admin_max_health_added_console")
+                            .replace("{player}", playerName)
+                            .replace("{amount}", String.valueOf(amount))
+                            .replace("{total}", String.valueOf(data.getMaxHealth())));
+                } else {
+                    sender.sendMessage(getMessage("player_not_found"));
+                }
+            });
+        }
+    }
+
+    public void adminRemoveMaxHealth(String playerName, double amount, org.bukkit.command.CommandSender sender) {
+        Player targetPlayer = Bukkit.getPlayer(playerName);
+        if (targetPlayer != null) {
+            PlayerData data = playerDataMap.get(targetPlayer.getUniqueId());
+            if (data != null) {
+                double newMaxHealth = data.getMaxHealth() - amount;
+                // 确保生命值上限不小于1
+                newMaxHealth = Math.max(1.0, newMaxHealth);
+                
+                data.setMaxHealth(newMaxHealth);
+                plugin.getDatabaseManager().savePlayerData(data);
+
+                // 应用新的生命值上限
+                applySavedMaxHealth(targetPlayer, data);
+
+                targetPlayer.sendMessage(getMessage("admin_max_health_removed")
+                        .replace("{amount}", String.valueOf(amount))
+                        .replace("{total}", String.valueOf(newMaxHealth)));
+
+                sender.sendMessage(getMessage("admin_max_health_removed_console")
+                        .replace("{player}", playerName)
+                        .replace("{amount}", String.valueOf(amount))
+                        .replace("{total}", String.valueOf(newMaxHealth)));
+            }
+        } else {
+            // 玩家不在线，直接从数据库更新
+            CompletableFuture.supplyAsync(() -> {
+                PlayerData data = plugin.getDatabaseManager().getPlayerDataByName(playerName);
+                if (data != null) {
+                    double newMaxHealth = data.getMaxHealth() - amount;
+                    // 确保生命值上限不小于1
+                    newMaxHealth = Math.max(1.0, newMaxHealth);
+                    
+                    data.setMaxHealth(newMaxHealth);
+                    plugin.getDatabaseManager().savePlayerData(data);
+                    return data;
+                }
+                return null;
+            }).thenAccept(data -> {
+                if (data != null) {
+                    sender.sendMessage(getMessage("admin_max_health_removed_console")
+                            .replace("{player}", playerName)
+                            .replace("{amount}", String.valueOf(amount))
+                            .replace("{total}", String.valueOf(data.getMaxHealth())));
+                } else {
+                    sender.sendMessage(getMessage("player_not_found"));
+                }
+            });
+        }
+    }
+
+    public void adminSetMaxHealth(String playerName, double amount, org.bukkit.command.CommandSender sender) {
+        Player targetPlayer = Bukkit.getPlayer(playerName);
+        if (targetPlayer != null) {
+            PlayerData data = playerDataMap.get(targetPlayer.getUniqueId());
+            if (data != null) {
+                // 确保生命值上限不小于1
+                double newMaxHealth = Math.max(1.0, amount);
+                
+                data.setMaxHealth(newMaxHealth);
+                plugin.getDatabaseManager().savePlayerData(data);
+
+                // 应用新的生命值上限
+                applySavedMaxHealth(targetPlayer, data);
+
+                targetPlayer.sendMessage(getMessage("admin_max_health_set")
+                        .replace("{amount}", String.valueOf(newMaxHealth)));
+
+                sender.sendMessage(getMessage("admin_max_health_set_console")
+                        .replace("{player}", playerName)
+                        .replace("{amount}", String.valueOf(newMaxHealth)));
+            }
+        } else {
+            // 玩家不在线，直接从数据库更新
+            CompletableFuture.supplyAsync(() -> {
+                PlayerData data = plugin.getDatabaseManager().getPlayerDataByName(playerName);
+                if (data != null) {
+                    // 确保生命值上限不小于1
+                    double newMaxHealth = Math.max(1.0, amount);
+                    
+                    data.setMaxHealth(newMaxHealth);
+                    plugin.getDatabaseManager().savePlayerData(data);
+                    return data;
+                }
+                return null;
+            }).thenAccept(data -> {
+                if (data != null) {
+                    sender.sendMessage(getMessage("admin_max_health_set_console")
+                            .replace("{player}", playerName)
+                            .replace("{amount}", String.valueOf(data.getMaxHealth())));
+                } else {
+                    sender.sendMessage(getMessage("player_not_found"));
+                }
+            });
+        }
+    }
+
     public String getMessage(String key) {
         HardcoreRespawn plugin = HardcoreRespawn.getInstance();
         File messagesFile = new File(plugin.getDataFolder(), "messages.yml");

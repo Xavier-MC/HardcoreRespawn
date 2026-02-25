@@ -1,5 +1,5 @@
 # HardcoreRespawn 消息配置
-version: 2.0
+version: 3.0
 
 messages:
   # 基础消息
@@ -35,6 +35,12 @@ messages:
   admin_respawn_count_set_console: "§a已将玩家{player}的复活次数设置为{amount}"
   admin_reset_player: "§a管理员重置了你的等待状态！"
   admin_reset_player_console: "§a已重置玩家{player}的等待状态"
+  admin_max_health_added: "§a管理员给你增加了{amount}点生命值上限！当前总数: {total}"
+  admin_max_health_added_console: "§a已给玩家{player}增加{amount}点生命值上限，当前总数: {total}"
+  admin_max_health_removed: "§a管理员给你减少了{amount}点生命值上限！当前总数: {total}"
+  admin_max_health_removed_console: "§a已给玩家{player}减少{amount}点生命值上限，当前总数: {total}"
+  admin_max_health_set: "§a管理员将你的生命值上限设置为{amount}！"
+  admin_max_health_set_console: "§a已将玩家{player}的生命值上限设置为{amount}"
   player_not_found: "§c找不到该玩家！"
 
   # 命令相关
@@ -46,6 +52,9 @@ messages:
   command_help_admin_add: "§e/respawn admin add <玩家> <数量> §7- 添加复活次数"
   command_help_admin_set: "§e/respawn admin set <玩家> <数量> §7- 设置复活次数"
   command_help_admin_reset: "§e/respawn admin reset <玩家> §7- 重置玩家状态"
+  command_help_admin_addhealth: "§e/respawn admin addhealth <玩家> <数量> §7- 增加生命值上限"
+  command_help_admin_removehealth: "§e/respawn admin removehealth <玩家> <数量> §7- 减少生命值上限"
+  command_help_admin_sethealth: "§e/respawn admin sethealth <玩家> <数量> §7- 设置生命值上限"
   command_help_reload: "§e/respawn reload §7- 重载配置"
 
   # BossBar

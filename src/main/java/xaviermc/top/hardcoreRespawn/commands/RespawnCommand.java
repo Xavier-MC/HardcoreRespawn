@@ -23,7 +23,7 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
         private static final List<String> MAIN_SUBCOMMANDS = Arrays.asList("skip", "info", "admin", "reload");
 
         // admin 子命令列表
-        private static final List<String> ADMIN_SUBCOMMANDS = Arrays.asList("add", "set", "reset");
+        private static final List<String> ADMIN_SUBCOMMANDS = Arrays.asList("add", "set", "reset", "addhealth", "removehealth", "sethealth");
 
         public RespawnCommand(HardcoreRespawn plugin) {
             this.plugin = plugin;
@@ -71,9 +71,11 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
                         break;
                 }
             } else if (args.length == 3) {
-                // admin add/set 需要玩家名
+                // admin add/set/addhealth/removehealth/sethealth 需要玩家名
                 if (args[0].equalsIgnoreCase("admin") &&
-                        (args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("set"))) {
+                        (args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("set") ||
+                         args[1].equalsIgnoreCase("addhealth") || args[1].equalsIgnoreCase("removehealth") ||
+                         args[1].equalsIgnoreCase("sethealth"))) {
                     if (sender.hasPermission("hardcorerespawn.admin")) {
                         // 返回所有在线玩家名
                         return Bukkit.getOnlinePlayers().stream()
@@ -83,9 +85,11 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             } else if (args.length == 4) {
-                // admin add/set 需要数字
+                // admin add/set/addhealth/removehealth/sethealth 需要数字
                 if (args[0].equalsIgnoreCase("admin") &&
-                        (args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("set"))) {
+                        (args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("set") ||
+                         args[1].equalsIgnoreCase("addhealth") || args[1].equalsIgnoreCase("removehealth") ||
+                         args[1].equalsIgnoreCase("sethealth"))) {
                     if (sender.hasPermission("hardcorerespawn.admin")) {
                         // 数字不需要补全，返回空列表
                         return new ArrayList<>();
@@ -116,6 +120,9 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_add")));
             sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_set")));
             sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_reset")));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_addhealth")));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_removehealth")));
+            sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_admin_sethealth")));
             sender.sendMessage(MessageUtils.getColoredMessage(plugin.getPlayerDataManager().getMessage("command_help_reload")));
         }
         return true;
@@ -159,7 +166,7 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 3) {
-            sender.sendMessage(MessageUtils.getColoredMessage("&c用法：/respawn admin <add|set|reset> <玩家> [数量]"));
+            sender.sendMessage(MessageUtils.getColoredMessage("&c用法：/respawn admin <add|set|reset|addhealth|removehealth|sethealth> <玩家> [数量]"));
             return true;
         }
 
@@ -193,6 +200,42 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
                 break;
             case "reset":
                 plugin.getPlayerDataManager().adminReset(targetPlayerName, sender);
+                break;
+            case "addhealth":
+                if (args.length != 4) {
+                    sender.sendMessage(MessageUtils.getColoredMessage("&c用法：/respawn admin addhealth <玩家> <数量>"));
+                    return true;
+                }
+                try {
+                    double amount = Double.parseDouble(args[3]);
+                    plugin.getPlayerDataManager().adminAddMaxHealth(targetPlayerName, amount, sender);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(MessageUtils.getColoredMessage("&c数量必须是数字！"));
+                }
+                break;
+            case "removehealth":
+                if (args.length != 4) {
+                    sender.sendMessage(MessageUtils.getColoredMessage("&c用法：/respawn admin removehealth <玩家> <数量>"));
+                    return true;
+                }
+                try {
+                    double amount = Double.parseDouble(args[3]);
+                    plugin.getPlayerDataManager().adminRemoveMaxHealth(targetPlayerName, amount, sender);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(MessageUtils.getColoredMessage("&c数量必须是数字！"));
+                }
+                break;
+            case "sethealth":
+                if (args.length != 4) {
+                    sender.sendMessage(MessageUtils.getColoredMessage("&c用法：/respawn admin sethealth <玩家> <数量>"));
+                    return true;
+                }
+                try {
+                    double amount = Double.parseDouble(args[3]);
+                    plugin.getPlayerDataManager().adminSetMaxHealth(targetPlayerName, amount, sender);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(MessageUtils.getColoredMessage("&c数量必须是数字！"));
+                }
                 break;
             default:
                 sender.sendMessage(MessageUtils.getColoredMessage("&c无效的子命令！"));
